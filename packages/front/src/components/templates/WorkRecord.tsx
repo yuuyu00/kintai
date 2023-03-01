@@ -5,6 +5,15 @@ export type Props = {
   isWoring: boolean;
   onStartWork: () => void;
   onEndWork: () => void;
+  onUpdateWorkRecords: (
+    rows: {
+      id?: number;
+      start: string;
+      end: string;
+      memo: string;
+    }[],
+    date: Date
+  ) => Promise<void>;
 } & CalendarProps;
 
 export const WorkRecord = ({
@@ -14,17 +23,27 @@ export const WorkRecord = ({
   onChangeSelectedMonth,
   onStartWork,
   onEndWork,
+  onUpdateWorkRecords,
 }: Props) => {
   const workHours =
     Math.round(
       (records.reduce((workHours, record) => {
         if (!record.endAt) return workHours;
 
-        return workHours + dayjs(record.endAt).diff(record.startAt, "minute");
+        const endAtWithCrossTheDay = dayjs(record.endAt).isBefore(
+          record.startAt
+        )
+          ? dayjs(record.endAt).add(1, "day")
+          : dayjs(record.endAt);
+
+        return (
+          workHours +
+          Math.abs(dayjs(endAtWithCrossTheDay).diff(record.startAt, "minute"))
+        );
       }, 0) /
         60) *
-        10
-    ) / 10;
+        100
+    ) / 100;
 
   return (
     <div className="flex flex-col items-center">
@@ -55,6 +74,7 @@ export const WorkRecord = ({
           records={records}
           selectedMonth={selectedMonth}
           onChangeSelectedMonth={onChangeSelectedMonth}
+          onUpdateWorkRecords={onUpdateWorkRecords}
         />
       </div>
     </div>

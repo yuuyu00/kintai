@@ -1,8 +1,14 @@
 import { useQuery, useMutation } from "@apollo/client";
 import { useState } from "react";
+import dayjs from "dayjs";
 import { WorkRecord as Component, Props } from "../components/templates";
 import { USER } from "../graphql/user";
-import { START_WORK, END_WORK } from "../graphql/workRecord";
+import {
+  START_WORK,
+  END_WORK,
+  UPDATE_WORK,
+  DELETE_WORK,
+} from "../graphql/workRecord";
 
 export const WorkRecord = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date());
@@ -13,6 +19,9 @@ export const WorkRecord = () => {
   });
   const [startWorkMutation] = useMutation(START_WORK);
   const [endWorkMutation] = useMutation(END_WORK);
+  const [createWorkRecordMutation] = useMutation(START_WORK);
+  const [updateWorkRecordMutation] = useMutation(UPDATE_WORK);
+  const [deleteWorkRecordMutation] = useMutation(DELETE_WORK);
 
   if (!userResponse) return null;
 
@@ -48,13 +57,72 @@ export const WorkRecord = () => {
     refetchUser();
   };
 
+  const onUpdateWorkRecords = async (
+    rows: {
+      id?: number;
+      start: string;
+      end: string;
+      memo: string;
+    }[],
+    date: Date
+  ) => {
+    const deletedRecord = workRecordList.filter(
+      (record) =>
+        dayjs(record.startAt).isSame(date, "date") &&
+        rows.every((row) => row.id !== record.id)
+    );
+
+    await Promise.all(
+      rows.map((row) => {
+        if (row.id) {
+          updateWorkRecordMutation({
+            variables: {
+              input: {
+                id: row.id,
+                startAt: `${dayjs(date).format("YYYY-MM-DD")} ${row.start}`,
+                endAt: row.end
+                  ? `${dayjs(date).format("YYYY-MM-DD")} ${row.end}`
+                  : null,
+                memo: row.memo,
+              },
+            },
+          });
+        } else {
+          createWorkRecordMutation({
+            variables: {
+              input: {
+                userId: user.id,
+                startAt: `${dayjs(date).format("YYYY-MM-DD")} ${row.start}`,
+                endAt: row.end
+                  ? `${dayjs(date).format("YYYY-MM-DD")} ${row.end}`
+                  : null,
+                memo: row.memo,
+              },
+            },
+          });
+        }
+      })
+    );
+
+    await Promise.all(
+      deletedRecord.map((record) =>
+        deleteWorkRecordMutation({
+          variables: { deleteWorkRecordId: record.id },
+        })
+      )
+    );
+
+    refetchUser();
+  };
+
   const props: Props = {
     selectedMonth,
-    onChangeSelectedMonth: setSelectedMonth,
     records: user.workRecords,
     isWoring: userResponse.user.workRecords.some((record) => !record.endAt),
     onStartWork,
     onEndWork,
+    onChangeSelectedMonth: setSelectedMonth,
+    onUpdateWorkRecords,
   };
 
   return <Component {...props} />;

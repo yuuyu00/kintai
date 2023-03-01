@@ -1,21 +1,43 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import dayjs from "dayjs";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import { WorkRecord } from "@kintai/api/src/gqlTypes";
-function classNames(...classes: string[]) {
+import { UpdateModal } from "./UpdateModal";
+
+const classNames = (...classes: string[]) => {
   return classes.filter(Boolean).join(" ");
-}
+};
 
 export type CalendarProps = {
   selectedMonth: Date;
-  onChangeSelectedMonth: (date: Date) => void;
   records: Omit<WorkRecord, "user" | "userId" | "craetedAt">[];
+  onChangeSelectedMonth: (date: Date) => void;
+  onUpdateWorkRecords: (
+    rows: {
+      id?: number;
+      start: string;
+      end: string;
+      memo: string;
+    }[],
+    date: Date
+  ) => Promise<void>;
 };
 export const Calendar = ({
   records,
   selectedMonth,
   onChangeSelectedMonth,
+  onUpdateWorkRecords,
 }: CalendarProps) => {
+  const [openedUpdateModalDate, setOpenedUpdateModalDate] =
+    useState<Date | null>(null);
+  const [isOpenUpdateModal, setIsOpenUpdateModal] = useState(false);
+
+  // モーダルが消える前にdateがnullになるとUIがガクつくので、それを避けるための小細工
+  const onCloseUpdateModal = () => {
+    setIsOpenUpdateModal(false);
+    setTimeout(() => setOpenedUpdateModalDate(null), 500);
+  };
+
   const daysInPreviousMonth = Array.from(
     new Array(dayjs(selectedMonth).subtract(1, "month").daysInMonth())
   ).map((_, index) =>
@@ -74,6 +96,15 @@ export const Calendar = ({
 
   return (
     <div className="lg:flex lg:h-full lg:flex-col w-full">
+      <UpdateModal
+        isOpen={isOpenUpdateModal}
+        records={records.filter((record) =>
+          dayjs(record.startAt).isSame(openedUpdateModalDate, "date")
+        )}
+        date={openedUpdateModalDate}
+        onClose={onCloseUpdateModal}
+        onSave={onUpdateWorkRecords}
+      />
       <header className="flex items-center justify-between border-b border-gray-500 pt-10 pb-6 pl-4 lg:flex-none">
         <div className="flex items-center">
           <div className="flex items-center rounded-md shadow-sm md:items-stretch">
@@ -131,8 +162,12 @@ export const Calendar = ({
                   day.isCurrentMonth
                     ? "bg-slate-700"
                     : "bg-slate-800 text-gray-500",
-                  "relative py-2 px-3 h-24"
+                  "relative py-2 px-3 h-24 cursor-pointer hover:bg-slate-600 transition-colors"
                 )}
+                onClick={() => {
+                  setOpenedUpdateModalDate(new Date(day.date));
+                  setIsOpenUpdateModal(true);
+                }}
               >
                 <time
                   dateTime={day.date}

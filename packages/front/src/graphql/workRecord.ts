@@ -26,3 +26,19 @@ export const END_WORK = graphql(`
     }
   }
 `);
+
+export const UPDATE_WORK = graphql(`
+  mutation endWork($input: UpdateWorkRecordInput!) {
+    updateWorkRecord(input: $input) {
+      id
+    }
+  }
+`);
+
+export const DELETE_WORK = graphql(`
+  mutation deleteWork($deleteWorkRecordId: Int!) {
+    deleteWorkRecord(id: $deleteWorkRecordId) {
+      id
+    }
+  }
+`);
