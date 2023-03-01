@@ -50,10 +50,6 @@ export const UpdateModal = ({
     );
   }, [date]);
 
-  useEffect(() => {
-    console.log("rows", rows);
-  }, [rows]);
-
   const onPressSave = async () => {
     if (!date) throw new Error("date is null");
 
