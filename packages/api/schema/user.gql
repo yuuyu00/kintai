@@ -1,0 +1,18 @@
+type User {
+  id: Int!
+  name: String!
+  workRecords: [WorkRecord!]!
+}
+
+extend type Query {
+  userList: [User!]!
+  user(id: Int!): User
+}
+
+input CreateUserInput {
+  name: String!
+}
+
+extend type Mutation {
+  createUser(input: CreateUserInput!): User!
+}

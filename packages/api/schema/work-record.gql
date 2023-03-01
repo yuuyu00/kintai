@@ -1,0 +1,33 @@
+type WorkRecord {
+  id: Int!
+  userId: Int!
+  startAt: String!
+  endAt: String
+  craetedAt: String!
+  memo: String
+  user: User!
+}
+
+extend type Query {
+  workRecordList: [WorkRecord!]!
+  workRecord(id: Int!): WorkRecord!
+}
+
+input CreateWorkRecordInput {
+  userId: Int!
+  startAt: String!
+  memo: String
+}
+
+input UpdateWorkRecordInput {
+  id: Int!
+  startAt: String
+  endAt: String
+  memo: String
+}
+
+extend type Mutation {
+  createWorkRecord(input: CreateWorkRecordInput!): WorkRecord!
+  updateWorkRecord(input: UpdateWorkRecordInput!): WorkRecord!
+  deleteWorkRecord(id: Int!): WorkRecord!
+}

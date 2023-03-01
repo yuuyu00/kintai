@@ -1,0 +1,46 @@
+{
+  "name": "@kintai/api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "node dist/server",
+    "dev": "ts-node-dev --no-notify --respawn --transpile-only src/server",
+    "clean": "rm -rf dist",
+    "build": "yarn run clean && npm -s run generate && tsc",
+    "prisma-migrate": "prisma migrate dev --name",
+    "prisma-deploy": "prisma migrate deploy",
+    "generate": "npm-run-all generate:*",
+    "generate:prisma": "prisma generate",
+    "generate:codegen": "npm-run-all generate:codegen:*",
+    "generate:codegen:prepare": "rimraf schema/schema.gql",
+    "generate:codegen:concat": "concat -o schema/schema.gql schema/*.gql",
+    "generate:codegen:dts": "graphql-codegen --config codegen.yml"
+  },
+  "dependencies": {
+    "@graphql-codegen/cli": "^3.2.1",
+    "@graphql-codegen/client-preset": "^2.1.0",
+    "@prisma/client": "4.11.0",
+    "apollo-server": "3.11.1",
+    "graphql": "16.6.0",
+    "prisma": "4.11.0",
+    "typescript": "^4.9.5"
+  },
+  "devDependencies": {
+    "@graphql-codegen/typescript": "3.0.1",
+    "@graphql-codegen/typescript-resolvers": "3.1.0",
+    "@types/node": "15.3.0",
+    "concat": "1.0.3",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "npm-run-all": "4.1.5",
+    "prettier": "2.8.4",
+    "rimraf": "3.0.2",
+    "ts-node": "10.9.1",
+    "ts-node-dev": "2.0.0"
+  },
+  "volta": {
+    "node": "16.17.1"
+  }
+}
