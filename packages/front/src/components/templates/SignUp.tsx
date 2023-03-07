@@ -23,7 +23,7 @@ export const SignUp = ({
 
   if (step === "firebase")
     return (
-      <div className="w-full h-screen mt-[-80px] flex flex-row justify-center items-center">
+      <div className="w-full h-screen pb-[80px] flex flex-row justify-center items-center">
         <div className=" bg-gray-700 rounded-xl px-10 py-10 mt-10 w-[500px] flex flex-col justify-center items-center">
           <h2 className="text-4xl font-medium">サインイン</h2>
           <button
@@ -38,7 +38,7 @@ export const SignUp = ({
     );
 
   return (
-    <div className="w-full h-screen  mt-[-80px] flex flex-row justify-center items-center">
+    <div className="w-full h-screen  pb-[80px] flex flex-row justify-center items-center">
       <div className=" bg-gray-700 rounded-xl px-10 py-10 mt-10 w-[500px] flex flex-col justify-center ">
         <h2 className="text-2xl font-medium mb-8">
           続行するにはユーザー情報を入力

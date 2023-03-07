@@ -47,24 +47,27 @@ const App = () => {
 
   return (
     <ApolloProvider client={apolloClient}>
-      <button className="text-sm" onClick={() => signOut(auth!)}>
-        サインアウトボタン（仮）
-      </button>
-      <Header />
       {(needToSignIn === undefined ||
         (needToSignIn === false && user === null)) && <Loading />}
       {user !== null && signInCompleted && (
         <AuthContext.Provider value={{ user, token }}>
+          <Header />
+          <button className="text-sm" onClick={() => signOut(auth!)}>
+            サインアウトボタン（仮）
+          </button>
           <div className="px-20 py-16">
             <WorkRecord />
           </div>
         </AuthContext.Provider>
       )}
       {!signInCompleted && (
-        <SignUp
-          onSignUpFirebase={onSignUp}
-          onCompleteSigunUp={() => setSignInCompleted(true)}
-        />
+        <>
+          <Header />
+          <SignUp
+            onSignUpFirebase={onSignUp}
+            onCompleteSigunUp={() => setSignInCompleted(true)}
+          />
+        </>
       )}
     </ApolloProvider>
   );
