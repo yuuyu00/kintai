@@ -3,6 +3,7 @@ import { Stats, Calendar, CalendarProps } from "../organisms";
 
 export type Props = {
   isWoring: boolean;
+  plannedWorkTime: number;
   onStartWork: () => void;
   onEndWork: () => void;
   onUpdateWorkRecords: (
@@ -11,6 +12,7 @@ export type Props = {
       start: string;
       end: string;
       memo: string;
+      plannedWorkTime: number;
     }[],
     date: Date
   ) => Promise<void>;
@@ -19,6 +21,7 @@ export type Props = {
 
 export const WorkRecord = ({
   isWoring,
+  plannedWorkTime,
   records,
   selectedMonth,
   onChangeSelectedMonth,
@@ -71,7 +74,7 @@ export const WorkRecord = ({
           </div>
         </div>
 
-        <Stats workHours={workHours} />
+        <Stats workHours={workHours} plannedWorkTime={plannedWorkTime} />
         <Calendar
           records={records}
           selectedMonth={selectedMonth}

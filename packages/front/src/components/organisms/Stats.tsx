@@ -1,8 +1,9 @@
 type Props = {
   workHours: number;
+  plannedWorkTime: number;
 };
 
-export const Stats = ({ workHours }: Props) => {
+export const Stats = ({ workHours, plannedWorkTime }: Props) => {
   return (
     <div className=" bg-gray-700 rounded-xl px-10 py-10 mt-10 w-full">
       <h3 className="text-lg font-semibold leading-6 text-title">今月の状況</h3>
@@ -20,7 +21,7 @@ export const Stats = ({ workHours }: Props) => {
             目標稼働時間
           </dt>
           <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
-            60時間
+            {plannedWorkTime}時間
           </dd>
         </div>
         <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">

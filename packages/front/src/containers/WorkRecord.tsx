@@ -9,13 +9,15 @@ import {
   UPDATE_WORK,
   DELETE_WORK,
 } from "../graphql/workRecord";
+import { useUser } from "../hooks";
 
 export const WorkRecord = () => {
+  const { token } = useUser();
+
   const [selectedMonth, setSelectedMonth] = useState(new Date());
 
   const { data: userResponse, refetch: refetchUser } = useQuery(USER, {
-    // ログイン機能を実装したら修正する
-    variables: { id: 1 },
+    variables: { token },
   });
   const [startWorkMutation] = useMutation(START_WORK);
   const [endWorkMutation] = useMutation(END_WORK);
@@ -23,12 +25,10 @@ export const WorkRecord = () => {
   const [updateWorkRecordMutation] = useMutation(UPDATE_WORK);
   const [deleteWorkRecordMutation] = useMutation(DELETE_WORK);
 
-  if (!userResponse) return null;
+  if (!userResponse || !userResponse.userByToken) return null;
 
-  if (!userResponse.user) throw new Error("user not found");
-
-  const user = userResponse.user;
-  const workRecordList = userResponse.user.workRecords;
+  const user = userResponse.userByToken;
+  const workRecordList = userResponse.userByToken.workRecords;
 
   const onStartWork = async () => {
     await startWorkMutation({
@@ -142,8 +142,11 @@ export const WorkRecord = () => {
 
   const props: Props = {
     selectedMonth,
+    plannedWorkTime: user.plannedWorkTime,
     records: user.workRecords,
-    isWoring: userResponse.user.workRecords.some((record) => !record.endAt),
+    isWoring: userResponse.userByToken.workRecords.some(
+      (record) => !record.endAt
+    ),
     onStartWork,
     onEndWork,
     onChangeSelectedMonth: setSelectedMonth,

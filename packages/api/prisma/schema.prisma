@@ -22,6 +22,8 @@ model WorkRecord {
 
 model User {
   id    Int @default(autoincrement()) @id
+  firebaseUid String @default(cuid())
   name  String?
+  plannedWorkTime Int @default(0)
   records WorkRecord[]
 }

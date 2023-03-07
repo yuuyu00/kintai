@@ -17,3 +17,17 @@ export const user: QueryResolvers["user"] = async ({}, { id }, { prisma }) => {
 
   return user;
 };
+
+export const userByToken: QueryResolvers["userByToken"] = async (
+  {},
+  { token },
+  { prisma, firebaseApp }
+) => {
+  const decodedToken = await firebaseApp.auth().verifyIdToken(token);
+
+  const user = await prisma.user.findFirst({
+    where: { firebaseUid: decodedToken.uid },
+  });
+
+  return user;
+};

@@ -2,15 +2,19 @@ type User {
   id: Int!
   name: String!
   workRecords: [WorkRecord!]!
+  plannedWorkTime: Int!
 }
 
 extend type Query {
   userList: [User!]!
   user(id: Int!): User
+  userByToken(token: String!): User
 }
 
 input CreateUserInput {
   name: String!
+  plannedWorkTime: Int!
+  token: String!
 }
 
 extend type Mutation {
