@@ -8,6 +8,6 @@ export interface Context {
   firebaseApp: firebase.app.App;
 }
 
-export const createContext = (firebaseApp: firebase.app.App) => () => {
+export const createContext = async (firebaseApp: firebase.app.App) => () => {
   return { prisma, firebaseApp };
 };

@@ -1,15 +1,15 @@
 import { QueryResolvers } from "../../gqlTypes";
 
 export const userList: QueryResolvers["userList"] = async (
-  {},
-  {},
+  res,
+  parent,
   { prisma }
 ) => {
   return prisma.user.findMany();
 };
 
-export const user: QueryResolvers["user"] = async ({}, { id }, { prisma }) => {
-  const user = await prisma.user.findUnique({ where: { id } });
+export const user: QueryResolvers["user"] = async (res, params, { prisma }) => {
+  const user = await prisma.user.findUnique({ where: { id: params.id } });
 
   if (!user) {
     throw new Error("User not found");
@@ -19,11 +19,11 @@ export const user: QueryResolvers["user"] = async ({}, { id }, { prisma }) => {
 };
 
 export const userByToken: QueryResolvers["userByToken"] = async (
-  {},
-  { token },
+  res,
+  params,
   { prisma, firebaseApp }
 ) => {
-  const decodedToken = await firebaseApp.auth().verifyIdToken(token);
+  const decodedToken = await firebaseApp.auth().verifyIdToken(params.token);
 
   const user = await prisma.user.findFirst({
     where: { firebaseUid: decodedToken.uid },

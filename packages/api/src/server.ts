@@ -1,25 +1,47 @@
-import { ApolloServer, gql } from "apollo-server";
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from "@apollo/server/express4";
+import express from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
 import path from "path";
 import { readFileSync } from "fs";
 import * as firebase from "firebase-admin";
 import { applicationDefault } from "firebase-admin/app";
-import { createContext } from "./context";
 import { resolvers } from "./resolvers";
+import { PrismaClient } from "@prisma/client";
 
-const getTypeDefs = () => {
-  const schemaPath = path.join("schema/", "schema.gql");
-  const schemaStr = readFileSync(schemaPath, "utf8");
-  return gql`
+const prisma = new PrismaClient();
+export const app = express();
+
+const startServer = async () => {
+  const getTypeDefs = () => {
+    const schemaPath = path.join("schema/", "schema.gql");
+    const schemaStr = readFileSync(schemaPath, "utf8");
+    return `#graphql
     ${schemaStr}
   `;
+  };
+
+  const firebaseApp = firebase.initializeApp({
+    credential: applicationDefault(),
+  });
+
+  const server = new ApolloServer({
+    typeDefs: getTypeDefs(),
+    resolvers: resolvers,
+  });
+
+  await server.start();
+
+  app.use(
+    cors(),
+    bodyParser.json(),
+    expressMiddleware(server, {
+      context: async () => ({ prisma, firebaseApp }),
+    })
+  );
+
+  return app;
 };
 
-const firebaseApp = firebase.initializeApp({
-  credential: applicationDefault(),
-});
-
-new ApolloServer({
-  typeDefs: getTypeDefs(),
-  context: createContext(firebaseApp),
-  resolvers: resolvers,
-}).listen({ port: 9000 }, () => console.log("listening on 9000"));
+startServer();

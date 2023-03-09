@@ -1,14 +1,11 @@
 {
   "name": "@kintai/api",
   "version": "1.0.0",
-  "main": "index.js",
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "node dist/server",
-    "dev": "ts-node-dev --no-notify --respawn --transpile-only src/server",
+    "dev": "ts-node-dev --no-notify --respawn --transpile-only src/local",
     "clean": "rm -rf dist",
-    "build": "yarn run clean && npm -s run generate && tsc",
     "prisma-migrate": "prisma migrate dev --name",
     "prisma-deploy": "prisma migrate deploy",
     "generate": "npm-run-all generate:*",
@@ -16,14 +13,29 @@
     "generate:codegen": "npm-run-all generate:codegen:*",
     "generate:codegen:prepare": "rimraf schema/schema.gql",
     "generate:codegen:concat": "concat -o schema/schema.gql schema/*.gql",
-    "generate:codegen:dts": "graphql-codegen --config codegen.yml"
+    "generate:codegen:dts": "graphql-codegen --config codegen.yml",
+    "lint": "",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "serve": "yarn run build && firebase emulators:start --only functions",
+    "shell": "yarn run build && firebase functions:shell",
+    "start": "yarn run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
   },
+  "engines": {
+    "node": "16"
+  },
+  "main": "lib/index.js",
   "dependencies": {
+    "@apollo/server": "^4.4.1",
     "@graphql-codegen/cli": "^3.2.1",
     "@graphql-codegen/client-preset": "^2.1.0",
     "@prisma/client": "4.11.0",
-    "apollo-server": "3.11.1",
+    "@types/cors": "^2.8.13",
+    "cors": "^2.8.5",
     "firebase-admin": "^11.5.0",
+    "firebase-functions": "^4.2.0",
     "graphql": "16.6.0",
     "prisma": "4.11.0",
     "typescript": "^4.9.5"
@@ -31,7 +43,7 @@
   "devDependencies": {
     "@graphql-codegen/typescript": "3.0.1",
     "@graphql-codegen/typescript-resolvers": "3.1.0",
-    "@types/node": "15.3.0",
+    "firebase-functions-test": "^3.0.0",
     "concat": "1.0.3",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-prettier": "^4.2.1",

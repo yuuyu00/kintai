@@ -1,7 +1,7 @@
 import { MutationResolvers } from "../../gqlTypes";
 
 export const createWorkRecord: MutationResolvers["createWorkRecord"] = async (
-  {},
+  res,
   { input },
   { prisma }
 ) => {
@@ -11,7 +11,7 @@ export const createWorkRecord: MutationResolvers["createWorkRecord"] = async (
 };
 
 export const updateWorkRecord: MutationResolvers["updateWorkRecord"] = async (
-  {},
+  res,
   { input },
   { prisma }
 ) => {
@@ -26,7 +26,7 @@ export const updateWorkRecord: MutationResolvers["updateWorkRecord"] = async (
 };
 
 export const deleteWorkRecord: MutationResolvers["deleteWorkRecord"] = async (
-  {},
+  res,
   { id },
   { prisma }
 ) => {

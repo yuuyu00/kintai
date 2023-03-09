@@ -7,3 +7,4 @@ schema/schema.gql
 .DS_Store
 prisma/*.db
 prisma/*.db-journal
+lib/
