@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
 import { SignUp as Component, SignUpProps } from "../components/templates";
-import { CREATE_USER, USER } from "../graphql/user";
+import { CREATE_USER, USER_BY_TOKEN } from "../graphql/user";
 
 type Props = {
   onSignUpFirebase: () => Promise<{ token: string | undefined } | undefined>;
@@ -9,7 +9,9 @@ type Props = {
 };
 export const SignUp = ({ onSignUpFirebase, onCompleteSigunUp }: Props) => {
   const [token, setToken] = useState<string | null>(null);
-  const { refetch: refetchUser } = useQuery(USER);
+  const { refetch: refetchUser } = useQuery(USER_BY_TOKEN, {
+    fetchPolicy: "no-cache",
+  });
   const [createUserMutation] = useMutation(CREATE_USER);
 
   const [step, setStep] = useState<"firebase" | "server">("firebase");
@@ -19,9 +21,9 @@ export const SignUp = ({ onSignUpFirebase, onCompleteSigunUp }: Props) => {
 
     if (signUpResult?.token === undefined) throw new Error("Sign up failed");
 
-    const refetchResult = await refetchUser();
+    const refetchResult = await refetchUser({ token: signUpResult.token });
 
-    if (refetchResult.data.user) {
+    if (refetchResult.data.userByToken) {
       onCompleteSigunUp();
       return;
     }

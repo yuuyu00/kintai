@@ -8,6 +8,7 @@ type User {
 extend type Query {
   userList: [User!]!
   user: User
+  userByToken(token: String!): User
 }
 
 input CreateUserInput {

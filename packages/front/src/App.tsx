@@ -25,6 +25,11 @@ const App = () => {
   const [token, setToken] = React.useState<string | null>(null);
   const { user, needToSignIn, auth, onSignUp } = useAuth();
 
+  const onSignOut = () => {
+    signOut(auth!);
+    window.location.reload();
+  };
+
   useEffect(() => {
     if (token || user === null) return;
 
@@ -55,7 +60,7 @@ const App = () => {
       {user !== null && signInCompleted && (
         <AuthContext.Provider value={{ user, token }}>
           <Header />
-          <button className="text-sm" onClick={() => signOut(auth!)}>
+          <button className="text-sm" onClick={onSignOut}>
             サインアウトボタン（仮）
           </button>
           <div className="px-20 py-16">

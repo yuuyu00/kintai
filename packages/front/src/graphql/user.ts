@@ -25,6 +25,22 @@ export const USER = graphql(`
   }
 `);
 
+export const USER_BY_TOKEN = graphql(`
+  query userByToken($token: String!) {
+    userByToken(token: $token) {
+      id
+      name
+      plannedWorkTime
+      workRecords {
+        id
+        startAt
+        memo
+        endAt
+      }
+    }
+  }
+`);
+
 export const CREATE_USER = graphql(`
   mutation createUser($input: CreateUserInput!) {
     createUser(input: $input) {

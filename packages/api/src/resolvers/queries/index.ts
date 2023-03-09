@@ -1,1 +1,1 @@
-export { user, userList } from "./user";
+export { user, userList, userByToken } from "./user";
