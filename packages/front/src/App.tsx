@@ -23,12 +23,7 @@ export const AuthContext = createContext(initialValue);
 const App = () => {
   const [signInCompleted, setSignInCompleted] = React.useState(true);
   const [token, setToken] = React.useState<string | null>(null);
-  const { user, needToSignIn, auth, onSignUp } = useAuth();
-
-  const onSignOut = () => {
-    signOut(auth!);
-    window.location.reload();
-  };
+  const { user, needToSignIn, onSignUp } = useAuth();
 
   useEffect(() => {
     if (token || user === null) return;
@@ -41,6 +36,10 @@ const App = () => {
       setSignInCompleted(false);
     }
   }, [needToSignIn]);
+
+  const onCompleteSigunUp = () => {
+    window.location.reload();
+  };
 
   const apolloClient = new ApolloClient({
     cache,
@@ -60,9 +59,6 @@ const App = () => {
       {user !== null && signInCompleted && (
         <AuthContext.Provider value={{ user, token }}>
           <Header />
-          <button className="text-sm" onClick={onSignOut}>
-            サインアウトボタン（仮）
-          </button>
           <div className="px-20 py-16">
             <WorkRecord />
           </div>
@@ -73,7 +69,7 @@ const App = () => {
           <Header />
           <SignUp
             onSignUpFirebase={onSignUp}
-            onCompleteSigunUp={() => setSignInCompleted(true)}
+            onCompleteSigunUp={onCompleteSigunUp}
           />
         </>
       )}
