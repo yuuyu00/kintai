@@ -1,7 +1,7 @@
 import { MutationResolvers } from "../../gqlTypes";
 
 export const createUser: MutationResolvers["createUser"] = async (
-  res,
+  _res,
   { input },
   { prisma, firebaseApp }
 ) => {

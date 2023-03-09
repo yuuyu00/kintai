@@ -1,22 +1,33 @@
 import { MutationResolvers } from "../../gqlTypes";
 
 export const createWorkRecord: MutationResolvers["createWorkRecord"] = async (
-  res,
+  _res,
   { input },
-  { prisma }
+  { prisma, user }
 ) => {
+  if (!user) throw new Error("Not authorized.");
+
   return prisma.workRecord.create({
-    data: { ...input, craetedAt: new Date().toISOString() },
+    data: { ...input, craetedAt: new Date().toISOString(), userId: user.id },
   });
 };
 
 export const updateWorkRecord: MutationResolvers["updateWorkRecord"] = async (
-  res,
+  _res,
   { input },
-  { prisma }
+  { prisma, user }
 ) => {
-  return prisma.workRecord.update({
+  if (!user) throw new Error("Must be logged in.");
+
+  const workRecord = await prisma.workRecord.findUnique({
     where: { id: input.id },
+  });
+
+  if (!workRecord) throw new Error("WorkRecord not found.");
+  if (workRecord.userId !== user.id) throw new Error("Not authorized.");
+
+  return prisma.workRecord.update({
+    where: { id: workRecord.id },
     data: {
       startAt: input.startAt || undefined,
       endAt: input.endAt,
@@ -26,9 +37,16 @@ export const updateWorkRecord: MutationResolvers["updateWorkRecord"] = async (
 };
 
 export const deleteWorkRecord: MutationResolvers["deleteWorkRecord"] = async (
-  res,
+  _res,
   { id },
-  { prisma }
+  { prisma, user }
 ) => {
-  return prisma.workRecord.delete({ where: { id } });
+  if (!user) throw new Error("Must be logged in.");
+
+  const workRecord = await prisma.workRecord.findUnique({ where: { id } });
+
+  if (!workRecord) throw new Error("WorkRecord not found.");
+  if (workRecord.userId !== user.id) throw new Error("Not authorized.");
+
+  return prisma.workRecord.delete({ where: { id: workRecord.id } });
 };

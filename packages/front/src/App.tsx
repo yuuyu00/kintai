@@ -10,14 +10,6 @@ const cache: InMemoryCache = new InMemoryCache({});
 const { NODE_ENV, REACT_APP_ENDPOINT_DEV, REACT_APP_ENDPOINT_PROD } =
   process.env;
 
-export const apolloClient = new ApolloClient({
-  cache,
-  uri:
-    NODE_ENV === "development"
-      ? REACT_APP_ENDPOINT_DEV
-      : REACT_APP_ENDPOINT_PROD,
-});
-
 const initialValue: {
   user: User | null;
   token: string | null;
@@ -44,6 +36,17 @@ const App = () => {
       setSignInCompleted(false);
     }
   }, [needToSignIn]);
+
+  const apolloClient = new ApolloClient({
+    cache,
+    uri:
+      NODE_ENV === "development"
+        ? REACT_APP_ENDPOINT_DEV
+        : REACT_APP_ENDPOINT_PROD,
+    headers: {
+      authorization: token || "",
+    },
+  });
 
   return (
     <ApolloProvider client={apolloClient}>

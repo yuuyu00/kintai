@@ -19,9 +19,9 @@ export const SignUp = ({ onSignUpFirebase, onCompleteSigunUp }: Props) => {
 
     if (signUpResult?.token === undefined) throw new Error("Sign up failed");
 
-    const refetchResult = await refetchUser({ token: signUpResult.token });
+    const refetchResult = await refetchUser();
 
-    if (refetchResult.data.userByToken) {
+    if (refetchResult.data.user) {
       onCompleteSigunUp();
       return;
     }

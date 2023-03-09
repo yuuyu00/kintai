@@ -29,11 +29,12 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "yarn generate && react-scripts build",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "generate": "graphql-codegen",
-    "codegen-watch": "graphql-codegen --watch"
+    "codegen-watch": "graphql-codegen --watch",
+    "deploy": "yarn build && firebase deploy"
   },
   "eslintConfig": {
     "extends": [

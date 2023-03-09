@@ -8,13 +8,13 @@ type WorkRecord {
   user: User!
 }
 
-extend type Query {
-  workRecordList: [WorkRecord!]!
-  workRecord(id: Int!): WorkRecord!
-}
+# FIXME: 一旦不要なのでコメントアウト
+# extend type Query {
+#   workRecordList: [WorkRecord!]!
+#   workRecord(id: Int!): WorkRecord!
+# }
 
 input CreateWorkRecordInput {
-  userId: Int!
   startAt: String!
   endAt: String
   memo: String

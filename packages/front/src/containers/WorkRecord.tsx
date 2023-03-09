@@ -9,31 +9,26 @@ import {
   UPDATE_WORK,
   DELETE_WORK,
 } from "../graphql/workRecord";
-import { useUser } from "../hooks";
 
 export const WorkRecord = () => {
-  const { token } = useUser();
-
   const [selectedMonth, setSelectedMonth] = useState(new Date());
 
-  const { data: userResponse, refetch: refetchUser } = useQuery(USER, {
-    variables: { token },
-  });
+  const { data: userResponse, refetch: refetchUser } = useQuery(USER);
   const [startWorkMutation] = useMutation(START_WORK);
   const [endWorkMutation] = useMutation(END_WORK);
   const [createWorkRecordMutation] = useMutation(START_WORK);
   const [updateWorkRecordMutation] = useMutation(UPDATE_WORK);
   const [deleteWorkRecordMutation] = useMutation(DELETE_WORK);
 
-  if (!userResponse || !userResponse.userByToken) return null;
+  if (!userResponse || !userResponse.user) return null;
 
-  const user = userResponse.userByToken;
-  const workRecordList = userResponse.userByToken.workRecords;
+  const user = userResponse.user;
+  const workRecordList = userResponse.user.workRecords;
 
   const onStartWork = async () => {
     await startWorkMutation({
       variables: {
-        input: { userId: user.id, startAt: new Date().toISOString() },
+        input: { startAt: new Date().toISOString() },
       },
     });
 
@@ -101,7 +96,6 @@ export const WorkRecord = () => {
           return createWorkRecordMutation({
             variables: {
               input: {
-                userId: user.id,
                 startAt: startDateTimeString,
                 endAt: endAtWithCrossTheDay,
                 memo: row.memo,
@@ -144,9 +138,7 @@ export const WorkRecord = () => {
     selectedMonth,
     plannedWorkTime: user.plannedWorkTime,
     records: user.workRecords,
-    isWoring: userResponse.userByToken.workRecords.some(
-      (record) => !record.endAt
-    ),
+    isWoring: userResponse.user.workRecords.some((record) => !record.endAt),
     onStartWork,
     onEndWork,
     onChangeSelectedMonth: setSelectedMonth,

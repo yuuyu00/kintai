@@ -8,3 +8,4 @@ schema/schema.gql
 prisma/*.db
 prisma/*.db-journal
 lib/
+*.log

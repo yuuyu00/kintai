@@ -10,8 +10,8 @@ export const USERS = graphql(`
 `);
 
 export const USER = graphql(`
-  query userByToken($token: String!) {
-    userByToken(token: $token) {
+  query user {
+    user {
       id
       name
       plannedWorkTime

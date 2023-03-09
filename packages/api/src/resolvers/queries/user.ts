@@ -5,29 +5,10 @@ export const userList: QueryResolvers["userList"] = async (
   parent,
   { prisma }
 ) => {
+  // TODO: 権限がadminの場合のみ実行可能にする
   return prisma.user.findMany();
 };
 
-export const user: QueryResolvers["user"] = async (res, params, { prisma }) => {
-  const user = await prisma.user.findUnique({ where: { id: params.id } });
-
-  if (!user) {
-    throw new Error("User not found");
-  }
-
-  return user;
-};
-
-export const userByToken: QueryResolvers["userByToken"] = async (
-  res,
-  params,
-  { prisma, firebaseApp }
-) => {
-  const decodedToken = await firebaseApp.auth().verifyIdToken(params.token);
-
-  const user = await prisma.user.findFirst({
-    where: { firebaseUid: decodedToken.uid },
-  });
-
+export const user: QueryResolvers["user"] = async (res, params, { user }) => {
   return user;
 };

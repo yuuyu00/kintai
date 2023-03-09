@@ -37,7 +37,24 @@ const startServer = async () => {
     cors(),
     bodyParser.json(),
     expressMiddleware(server, {
-      context: async () => ({ prisma, firebaseApp }),
+      context: async ({ req }) => {
+        const token = req.headers.authorization;
+
+        if (!token) {
+          return {
+            prisma,
+            firebaseApp,
+            user: null,
+          };
+        }
+
+        const decodedToken = await firebaseApp.auth().verifyIdToken(token);
+        const user = await prisma.user.findFirst({
+          where: { firebaseUid: decodedToken.uid },
+        });
+
+        return { prisma, firebaseApp, user };
+      },
     })
   );
 
