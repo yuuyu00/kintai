@@ -25,6 +25,8 @@ yarn-error.log*
 /src/generated-graphql
 *.log
 *.cache
+
+# e2e
 /test-results/
 /playwright-report/
 /playwright/.cache/
