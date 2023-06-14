@@ -7,8 +7,7 @@ import { useAuth } from "./hooks";
 import { User } from "firebase/auth";
 
 const cache: InMemoryCache = new InMemoryCache({});
-const { NODE_ENV, REACT_APP_ENDPOINT_DEV, REACT_APP_ENDPOINT_PROD } =
-  process.env;
+const { NODE_ENV, VITE_ENDPOINT_DEV, VITE_ENDPOINT_PROD } = import.meta.env;
 
 const initialValue: {
   user: User | null;
@@ -43,10 +42,7 @@ const App = () => {
 
   const apolloClient = new ApolloClient({
     cache,
-    uri:
-      NODE_ENV === "development"
-        ? REACT_APP_ENDPOINT_DEV
-        : REACT_APP_ENDPOINT_PROD,
+    uri: NODE_ENV === "development" ? VITE_ENDPOINT_DEV : VITE_ENDPOINT_PROD,
     headers: {
       authorization: token || "",
     },
@@ -54,25 +50,27 @@ const App = () => {
 
   return (
     <ApolloProvider client={apolloClient}>
-      {(needToSignIn === undefined ||
-        (needToSignIn === false && user === null)) && <Loading />}
-      {user !== null && signInCompleted && (
-        <AuthContext.Provider value={{ user, token }}>
-          <Header />
-          <div className="px-20 py-16">
-            <WorkRecord />
-          </div>
-        </AuthContext.Provider>
-      )}
-      {!signInCompleted && (
-        <>
-          <Header />
-          <SignUp
-            onSignUpFirebase={onSignUp}
-            onCompleteSigunUp={onCompleteSigunUp}
-          />
-        </>
-      )}
+      <div className="bg-background  min-h-screen min-w-screen text-title">
+        {(needToSignIn === undefined ||
+          (needToSignIn === false && user === null)) && <Loading />}
+        {user !== null && signInCompleted && (
+          <AuthContext.Provider value={{ user, token }}>
+            <Header />
+            <div className="px-20 py-16">
+              <WorkRecord />
+            </div>
+          </AuthContext.Provider>
+        )}
+        {!signInCompleted && (
+          <>
+            <Header />
+            <SignUp
+              onSignUpFirebase={onSignUp}
+              onCompleteSigunUp={onCompleteSigunUp}
+            />
+          </>
+        )}
+      </div>
     </ApolloProvider>
   );
 };

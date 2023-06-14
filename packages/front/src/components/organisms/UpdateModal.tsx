@@ -56,9 +56,12 @@ export const UpdateModal = ({
   };
 
   return (
+    // FIXME: headless uiとreactの型が合わないので一旦ignore
+    // @ts-ignore
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={onClose}>
         <Transition.Child
+          // @ts-ignore
           as={Fragment}
           enter="ease-out duration-300"
           enterFrom="opacity-0"
@@ -73,6 +76,7 @@ export const UpdateModal = ({
         <div className="fixed inset-0 z-10 overflow-y-auto">
           <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
             <Transition.Child
+              // @ts-ignore
               as={Fragment}
               enter="ease-out duration-300"
               enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
