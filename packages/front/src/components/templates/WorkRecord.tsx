@@ -32,11 +32,15 @@ export const WorkRecord = ({
 }: Props) => {
   const workHours =
     Math.round(
-      (records.reduce((workHours, record) => {
-        if (!record.endAt) return workHours;
+      (records
+        .filter((record) =>
+          dayjs(record.startAt).isSame(selectedMonth, "month")
+        )
+        .reduce((workHours, record) => {
+          if (!record.endAt) return workHours;
 
-        return workHours + dayjs(record.endAt).diff(record.startAt, "minute");
-      }, 0) /
+          return workHours + dayjs(record.endAt).diff(record.startAt, "minute");
+        }, 0) /
         60) *
         100
     ) / 100;
