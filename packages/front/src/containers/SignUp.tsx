@@ -38,7 +38,7 @@ export const SignUp = ({ onSignUpFirebase, onCompleteSigunUp }: Props) => {
   }) => {
     if (!token) throw new Error("token is not set");
 
-    const res = await createUserMutation({
+    await createUserMutation({
       variables: {
         input: {
           name: params.name,

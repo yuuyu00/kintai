@@ -3,9 +3,6 @@ import dayjs from "dayjs";
 import { Dialog, Transition } from "@headlessui/react";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { WorkRecord } from "../../generated-graphql/graphql";
-import { useMutation, useQuery } from "@apollo/client";
-import { DELETE_WORK, START_WORK, UPDATE_WORK } from "../../graphql/workRecord";
-import { USER } from "../../graphql/user";
 
 type Row = {
   id?: number;
@@ -48,7 +45,7 @@ export const UpdateModal = ({
           }))
         : [{ start: "", end: "", memo: "" }]
     );
-  }, [date]);
+  }, [date, records]);
 
   const onPressSave = async () => {
     if (!date) throw new Error("date is null");

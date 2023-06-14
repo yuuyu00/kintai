@@ -4,7 +4,7 @@ import { WorkRecord, SignUp } from "./containers";
 import { Loading } from "./components/templates";
 import { Header } from "./components/organisms";
 import { useAuth } from "./hooks";
-import { signOut, User } from "firebase/auth";
+import { User } from "firebase/auth";
 
 const cache: InMemoryCache = new InMemoryCache({});
 const { NODE_ENV, REACT_APP_ENDPOINT_DEV, REACT_APP_ENDPOINT_PROD } =

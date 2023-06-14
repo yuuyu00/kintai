@@ -82,7 +82,15 @@ export const Calendar = ({
         ),
         isToday: dayjs().isSame(date, "date"),
       })),
-    [selectedMonth, records, dayjs]
+    [
+      daysInPreviousMonth,
+      daysInMonth,
+      daysInNextMonth,
+      displayDaysInPreviousMonth,
+      displayDaysInNextMonth,
+      records,
+      selectedMonth,
+    ]
   );
 
   const disabledNextMonth = dayjs(selectedMonth).isSame(dayjs(), "month");
